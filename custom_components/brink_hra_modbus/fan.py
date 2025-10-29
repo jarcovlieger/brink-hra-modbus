@@ -22,12 +22,12 @@ PRESETS = {
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities([AirFlow(coordinator, entry.entry_id)])
+    async_add_entities([BrinkFan(coordinator, entry.entry_id)])
  
-class AirFlow(BrinkEntity,FanEntity):
-    """Air Flow Fan Entity"""
+class BrinkFan(BrinkEntity,FanEntity):
+    """Brink Ventilation Fan Entity"""
 
-    _attr_name = "Air Flow Fan"
+    _attr_name = "Ventilation fan"
     _attr_supported_features = (
         FanEntityFeature.SET_SPEED 
         | FanEntityFeature.PRESET_MODE 
@@ -43,7 +43,7 @@ class AirFlow(BrinkEntity,FanEntity):
 
     def __init__(self, coordinator, entry_id):
         super().__init__(coordinator, entry_id)
-        self._attr_unique_id = f"{entry_id}_fan" 
+        self._attr_unique_id = f"{entry_id}_ventilation_fan" 
        
     
     async def async_turn_on(self, percentage=None, preset_mode=None,**kwargs):
