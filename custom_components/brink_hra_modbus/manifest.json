@@ -1,0 +1,18 @@
+{
+  "domain": "brink_hra_modbus",
+  "name": "Brink HRA Modbus",
+  "version": "0.1.0",
+  "codeowners": [
+    "@jarcovlieger"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/brink_hra_modbus",
+  "iot_class": "local_polling",
+  "quality_scale": "bronze",
+  "requirements": [
+    "pymodbus==3.11.2"
+  ],
+  "ssdp": [],
+  "zeroconf": []
+}
