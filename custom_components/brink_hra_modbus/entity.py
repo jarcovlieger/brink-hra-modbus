@@ -1,6 +1,6 @@
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.entity import DeviceInfo
-from .const import DOMAIN 
+from .const import DOMAIN, DEFAULT_NAME 
 
 class BrinkEntity(CoordinatorEntity):
     """Base entity for integration."""
@@ -12,12 +12,12 @@ class BrinkEntity(CoordinatorEntity):
         super().__init__(coordinator)
         self._entry_id = entry_id
         self._unique_device_id = entry_id
-        
+
     @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             identifiers={(DOMAIN, self._unique_device_id)},
-            name="Brink Heat Recovery Appliance",
+            name= DEFAULT_NAME,
             manufacturer="Brink",
             model="Flair Series",
     )
