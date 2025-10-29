@@ -1,18 +1,17 @@
 {
-  "domain": "brink_hra_modbus",
+  "domain": "brink_ventilation",
   "name": "Brink HRA Modbus",
   "version": "0.1.0",
   "codeowners": [
     "@jarcovlieger"
   ],
   "config_flow": true,
+  "brand": "brink_ventilation",
   "dependencies": [],
   "documentation": "https://github.com/jarcovlieger/brink-hra-modbus",
   "iot_class": "local_polling",
   "quality_scale": "bronze",
   "requirements": [
     "pymodbus==3.11.2"
-  ],
-  "ssdp": [],
-  "zeroconf": []
+  ]  
 }
