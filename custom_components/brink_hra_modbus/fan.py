@@ -5,12 +5,11 @@ from homeassistant.components.fan import (
     FanEntityFeature,
 )
 from homeassistant.components.fan import FanEntity
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity 
 
 from .const import DOMAIN
 from .coordinator import BrinkHraModbusCoordinator
 from .base_entity import get_device_info
+from .entity import BrinkEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,9 +24,8 @@ async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities([AirFlow(coordinator, entry.entry_id)])
  
-class AirFlow(CoordinatorEntity,FanEntity):
+class AirFlow(BrinkEntity,FanEntity):
     """Air Flow Fan Entity"""
-    _coordinator: BrinkHraModbusCoordinator
 
     _attr_name = "Air Flow Fan"
     _attr_supported_features = (
@@ -44,11 +42,9 @@ class AirFlow(CoordinatorEntity,FanEntity):
     _attr_preset_mode = PRESETS["holiday"]
 
     def __init__(self, coordinator, entry_id):
-        super().__init__(coordinator)
-        self._entry_id = entry_id
-        self._unique_device_id = entry_id  # Required for device_info
-        self._attr_unique_id = f"{entry_id}_fan"  # Required for entity registry
-        self._coordinator = coordinator
+        super().__init__(coordinator, entry_id)
+        self._attr_unique_id = f"{entry_id}_fan" 
+       
     
     async def async_turn_on(self, percentage=None, preset_mode=None,**kwargs):
         if preset_mode is not None:
@@ -56,11 +52,11 @@ class AirFlow(CoordinatorEntity,FanEntity):
         elif percentage is not None:
             await self.async_set_percentage(percentage)
         else:
-            await self._coordinator.set_fan_flow_rate(self._coordinator.last_fan_rate)
+            await self.coordinator.set_fan_flow_rate(self.coordinator.last_fan_rate)
 
     async def async_turn_off(self, **kwargs):
-        await self._coordinator.set_fan_flow_rate(0)
-        await self._coordinator.async_request_refresh()
+        await self.coordinator.set_fan_flow_rate(0)
+        await self.coordinator.async_request_refresh()
 
     async def async_set_percentage(self, percentage):
         if percentage == 0:
@@ -72,23 +68,23 @@ class AirFlow(CoordinatorEntity,FanEntity):
         else:
             position = 3
 
-        await self._coordinator.set_fan_flow_rate(position)
-        await self._coordinator.async_request_refresh()
+        await self.coordinator.set_fan_flow_rate(position)
+        await self.coordinator.async_request_refresh()
 
     async def async_set_preset_mode(self, preset_mode: str):
         if preset_mode not in PRESETS:
             raise ValueError(f"Invalid preset mode: {preset_mode}")
 
-        await self._coordinator.set_fan_flow_rate(PRESETS[preset_mode])
-        await self._coordinator.async_request_refresh()
+        await self.coordinator.set_fan_flow_rate(PRESETS[preset_mode])
+        await self.coordinator.async_request_refresh()
         
     @property
     def is_on(self):
-        return self._coordinator.fan_state > 0
+        return self.coordinator.fan_state > 0
 
     @property
     def percentage(self):
-        return {0: 0, 1: 33, 2: 66, 3: 100}.get(self._coordinator.fan_state, 0)
+        return {0: 0, 1: 33, 2: 66, 3: 100}.get(self.coordinator.fan_state, 0)
     
     @property
     def speed_count(self) -> int:
@@ -103,12 +99,8 @@ class AirFlow(CoordinatorEntity,FanEntity):
     @property
     def preset_mode(self):
         for name, position in PRESETS.items():
-            if position == self._coordinator.fan_state:
+            if position == self.coordinator.fan_state:
                 return name
         return "holiday"
-    
-    @property
-    def device_info(self) -> DeviceInfo:
-        return get_device_info(self)
 
    
