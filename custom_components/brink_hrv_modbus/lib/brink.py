@@ -53,6 +53,14 @@ class Brink():
         result = await self._client.read_input_registers(address=4036, count=1, device_id=self._device_id)
         return result.registers[0]/10.0 
     
+    async def get_exhaust_fan_temperature(self) -> 'float':
+        """
+        Gets the exhaust fan temperature.
+        :return: Temperature in degrees Celsius.
+        """
+        result = await self._client.read_input_registers(address=4046, count=1, device_id=self._device_id)
+        return result.registers[0]/10.0 
+    
     async def set_modbus_control_switched_on(self, value: int) -> None:
         """
         Sets the Modbus control switched on register.

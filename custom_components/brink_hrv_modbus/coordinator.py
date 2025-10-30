@@ -3,7 +3,7 @@ import logging
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from datetime import timedelta
-from .brink import Brink
+from .lib.brink import Brink
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -18,7 +18,8 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=5),
         )
        
-        self.temperature = None
+        self.supply_temperature = None
+        self.exhaust_temperature = None
         self.fan_state = 0
         self.last_fan_rate = 1
 
@@ -30,7 +31,8 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator):
     
     async def _async_update_data(self):
         try:
-            self.temperature = await self._brink.get_supply_fan_temperature()
+            self.supply_temperature = await self._brink.get_supply_fan_temperature()
+            self.exhaust_temperature = await self._brink.get_exhaust_fan_temperature()
             self.fan_state = await self._brink.get_switch_position()
         except Exception as e:
             _LOGGER.error("Modbus read failed: %s", e)
