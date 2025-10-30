@@ -6,13 +6,13 @@ rules:
   common-modules: done
   config-flow-test-coverage: todo
   config-flow: done
-  dependency-transparency: todo
+  dependency-transparency: done
   docs-actions: todo
   docs-high-level-description: todo
   docs-installation-instructions: todo
   docs-removal-instructions: todo
-  entity-event-setup: todo
-  entity-unique-id: todo
+  entity-event-setup: done
+  entity-unique-id: done
   has-entity-name: todo
   runtime-data: todo
   test-before-configure: todo

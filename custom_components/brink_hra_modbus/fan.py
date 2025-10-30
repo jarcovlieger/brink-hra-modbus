@@ -7,8 +7,6 @@ from homeassistant.components.fan import (
 from homeassistant.components.fan import FanEntity
 
 from .const import DOMAIN
-from .coordinator import BrinkHraModbusCoordinator
-from .base_entity import get_device_info
 from .entity import BrinkEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -25,9 +23,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
     async_add_entities([BrinkFan(coordinator, entry.entry_id)])
  
 class BrinkFan(BrinkEntity,FanEntity):
-    """Brink Ventilation Fan Entity"""
+    """Brink Ventilation Entity"""
 
-    _attr_name = "Ventilation fan"
+    _attr_name = "Ventilation"
     _attr_supported_features = (
         FanEntityFeature.SET_SPEED 
         | FanEntityFeature.PRESET_MODE 
@@ -43,7 +41,7 @@ class BrinkFan(BrinkEntity,FanEntity):
 
     def __init__(self, coordinator, entry_id):
         super().__init__(coordinator, entry_id)
-        self._attr_unique_id = f"{entry_id}_ventilation_fan" 
+        self._attr_unique_id = f"{entry_id}_ventilation" 
        
     
     async def async_turn_on(self, percentage=None, preset_mode=None,**kwargs):
