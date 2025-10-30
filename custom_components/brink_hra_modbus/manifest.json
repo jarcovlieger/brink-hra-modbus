@@ -1,6 +1,6 @@
 {
   "domain": "brink_ventilation",
-  "name": "Brink HRA Modbus",
+  "name": "Brink HRV Modbus",
   "version": "0.1.0",
   "codeowners": [
     "@jarcovlieger"
@@ -8,7 +8,7 @@
   "config_flow": true,
   "brand": "brink_ventilation",
   "dependencies": [],
-  "documentation": "https://github.com/jarcovlieger/brink-hra-modbus",
+  "documentation": "https://github.com/jarcovlieger/brink-hrv-modbus",
   "iot_class": "local_polling",
   "quality_scale": "bronze",
   "requirements": [

@@ -19,5 +19,5 @@ class BrinkEntity(CoordinatorEntity):
             identifiers={(DOMAIN, self._unique_device_id)},
             name= DEFAULT_NAME,
             manufacturer="Brink",
-            model="HRA (Heat Recovery Appliance)",
+            model="Heat Recovery Ventilation)",
     )

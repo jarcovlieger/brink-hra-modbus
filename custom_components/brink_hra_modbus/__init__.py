@@ -6,7 +6,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from .const import DOMAIN, CONF_HOST, CONF_PORT
-from .coordinator import BrinkHraModbusCoordinator
+from .coordinator import BrinkHrvModbusCoordinator
 
 # TODO List the platforms that you want to support.
 # For your initial PR, limit it to 1 platform.
@@ -24,7 +24,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     host = entry.data[CONF_HOST]
     port = entry.data[CONF_PORT]
 
-    coordinator = await BrinkHraModbusCoordinator.initialize(hass, host, port)
+    coordinator = await BrinkHrvModbusCoordinator.initialize(hass, host, port)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     await coordinator.async_config_entry_first_refresh()

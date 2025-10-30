@@ -1,4 +1,4 @@
-"""Config flow for the Brink HRA Modbus integration."""
+"""Config flow for the Brink HRV Modbus integration."""
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow

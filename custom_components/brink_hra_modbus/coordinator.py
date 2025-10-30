@@ -7,14 +7,14 @@ from .brink import Brink
 
 _LOGGER = logging.getLogger(__name__)
 
-class BrinkHraModbusCoordinator(DataUpdateCoordinator):
+class BrinkHrvModbusCoordinator(DataUpdateCoordinator):
     _brink: Brink
 
     def __init__(self, hass):
         super().__init__(
             hass,
             _LOGGER,
-            name="Brink HRA Modbus Coordinator",
+            name="Brink HRV Modbus Coordinator",
             update_interval=timedelta(seconds=5),
         )
        
