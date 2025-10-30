@@ -1,7 +1,6 @@
 {
   "domain": "brink_ventilation",
   "name": "Brink HRV Modbus",
-  "version": "0.1.0",
   "codeowners": [
     "@jarcovlieger"
   ],
@@ -12,5 +11,6 @@
   "quality_scale": "bronze",
   "requirements": [
     "pymodbus==3.11.2"
-  ]  
+  ],
+  "version": "0.1.0"  
 }
