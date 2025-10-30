@@ -22,6 +22,7 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator):
         self.exhaust_temperature = None
         self.fan_state = 0
         self.last_fan_rate = 1
+        self.filter_dirty = False
 
     @classmethod
     async def initialize(cls, hass, host, port):
@@ -34,6 +35,7 @@ class BrinkHrvModbusCoordinator(DataUpdateCoordinator):
             self.supply_temperature = await self._brink.get_supply_fan_temperature()
             self.exhaust_temperature = await self._brink.get_exhaust_fan_temperature()
             self.fan_state = await self._brink.get_switch_position()
+            self.filter_dirty = await self._brink.get_filter_dirty()
         except Exception as e:
             _LOGGER.error("Modbus read failed: %s", e)
 

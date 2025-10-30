@@ -14,36 +14,6 @@ class Brink():
         self._client = AsyncModbusTcpClient(host, port=port)
         await self._client.connect()
         return self
-
-    def get_software_version(self) -> str:
-        """
-        Gets software version.
-        :return: version in byte range[0..9].
-        """
-        major = self.get_major_software_version_number()
-        minor = self.get_minor_software_version_number()
-        return f"{major}.{minor}"   
-    
-    def get_minor_software_version_number(self) -> str:
-        """
-        Gets Type and major version number.
-        :return: major nr in byte range[0..9].
-        """
-        registers = self._client.read_input_registers(address=4001, count=1, device_id=self._device_id)
-        byte_array = registers.registers[0].to_bytes(4, byteorder="big")
-        number = int(byte_array[1].hex())
-        return f"{number}"
-    
-    def get_major_software_version_number(self) -> str:
-        """
-        Gets Type and major version number.
-        :return: major nr in byte range[0..9].
-        """
-        registers = self._client.read_input_registers(address=4000, count=1, device_id=self._device_id)
-        byte_array = registers.registers[0].to_bytes(4, byteorder="big")
-        type_str = byte_array[:3].decode("ascii")
-        number = int(byte_array[3:].hex())
-        return f"{type_str}{number}"
     
     async def get_supply_fan_temperature(self) -> 'float':
         """
@@ -92,4 +62,11 @@ class Brink():
         result = await self._client.read_holding_registers(address=8001, device_id=self._device_id)
         return result.registers[0]
 
+    async def get_filter_dirty(self) -> bool:
+        """
+        Gets the filter dirty status.
+        :return: True if filter is dirty, False otherwise.
+        """
+        result = await self._client.read_input_registers(address=4100, count=1, device_id=self._device_id)
+        return result.registers[0] == 1
     

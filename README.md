@@ -1,6 +1,8 @@
 # Brink HRV Modbus Integration
 Home Assistant integration to connect your Brink HRV (Heat Recovery Ventilation) to Home Assistant via Modbus TCP.
 
+<img src="./Images/Sensors_and_controls.png"/>
+
 ## Installation
 To install the Brink HRV Modbus Integration, follow these steps:
 

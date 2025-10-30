@@ -10,7 +10,7 @@ from .coordinator import BrinkHrvModbusCoordinator
 
 # TODO List the platforms that you want to support.
 # For your initial PR, limit it to 1 platform.
-_PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.FAN]
+_PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.FAN, Platform.BINARY_SENSOR]
 
 # TODO Create ConfigEntry type alias with API object
 # Alias name should be prefixed by integration name
