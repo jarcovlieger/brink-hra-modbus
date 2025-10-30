@@ -7,6 +7,7 @@ from .const import DOMAIN, CONF_HOST, CONF_PORT, DEFAULT_PORT, DEFAULT_NAME
 class BrinkHraModbusConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         if user_input:
+            self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
             return self.async_create_entry(
                 title=DEFAULT_NAME, 
                 data=user_input
