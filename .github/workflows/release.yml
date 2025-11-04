@@ -48,12 +48,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Zip brink_ventilation folder
+      run: |
+        zip -r brink_ventilation.zip custom_components/brink_ventilation
+
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
-        name: Release ${{ github.ref_name }}
-        files: |
-          custom_components/brink_ventilation/**
+        name: ${{ github.ref_name }}
+        files: brink_ventilation.zip
       env:
         GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
