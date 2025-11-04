@@ -1,0 +1,63 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger only for tags starting with 'v', e.g., v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Required to fetch tags
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Extract version from tag
+      id: get_version
+      run: |
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+    - name: Update manifest.json with new version
+      run: |
+        jq --arg version "${VERSION#v}" '.version = $version' custom_components/brink_ventilation/manifest.json > manifest.tmp
+        mv manifest.tmp custom_components/brink_ventilation/manifest.json
+
+    - name: Install Home Assistant CLI for validations
+      run: |
+        pip install homeassistant-cli
+
+    - name: Validate with hassfest
+      run: |
+        hassfest validate
+
+    - name: Validate with HACS
+      run: |
+        mean=`python3 -c "import sys, json; print(json.load(sys.stdin)['address'])" <<< $(hacs validate custom_components/brink_ventilation)`
+        echo $mean
+
+    - name: Commit version bump
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add custom_components/brink_ventilation/manifest.json
+        git commit -m "Bump version to ${VERSION#v}" || echo "No changes to commit"
+        git push
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.VERSION }}
+        name: Release ${{ env.VERSION }}
+        files: |
+          custom_components/brink_ventilation/**
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
