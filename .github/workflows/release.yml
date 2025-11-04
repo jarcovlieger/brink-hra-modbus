@@ -37,8 +37,8 @@ jobs:
         git config user.email "actions@github.com"
         git add custom_components/brink_ventilation/manifest.json
         git commit -m "Bump version to ${VERSION}" || echo "No changes to commit"
-        git push
-
+        git push origin HEAD:${GITHUB_REF#refs/*/}
+        
   wait-for-validation:
     name: Await Validation
     runs-on: ubuntu-latest
