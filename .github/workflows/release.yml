@@ -3,7 +3,7 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*'  # Trigger only for tags starting with 'v', e.g., v1.0.0
+      - '*'
 
 jobs:
   release:
@@ -28,7 +28,7 @@ jobs:
 
     - name: Update manifest.json with new version
       run: |
-        jq --arg version "${VERSION#v}" '.version = $version' custom_components/brink_ventilation/manifest.json > manifest.tmp
+        jq --arg version "${VERSION}" '.version = $version' custom_components/brink_ventilation/manifest.json > manifest.tmp
         mv manifest.tmp custom_components/brink_ventilation/manifest.json
 
     - name: Install Home Assistant CLI for validations
@@ -49,14 +49,14 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git add custom_components/brink_ventilation/manifest.json
-        git commit -m "Bump version to ${VERSION#v}" || echo "No changes to commit"
+        git commit -m "Bump version to ${VERSION}" || echo "No changes to commit"
         git push
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.VERSION }}
-        name: Release ${{ env.VERSION }}
+        name: ${{ env.VERSION }}
         files: |
           custom_components/brink_ventilation/**
       env:
