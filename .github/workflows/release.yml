@@ -40,8 +40,10 @@ jobs:
   create_release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: extract-version
-
+    needs: 
+      - extract-version
+      - validate-hacs
+      - validate-hassfest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -49,9 +51,9 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ env.VERSION }}
-        name: ${{ env.VERSION }}
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
         files: |
           custom_components/brink_ventilation/**
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
