@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  release:
+  update-manifest:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,20 +30,7 @@ jobs:
       run: |
         jq --arg version "${VERSION}" '.version = $version' custom_components/brink_ventilation/manifest.json > manifest.tmp
         mv manifest.tmp custom_components/brink_ventilation/manifest.json
-
-    - name: Install Home Assistant CLI for validations
-      run: |
-        pip install homeassistant-cli
-
-    - name: Validate with hassfest
-      run: |
-        hassfest validate
-
-    - name: Validate with HACS
-      run: |
-        mean=`python3 -c "import sys, json; print(json.load(sys.stdin)['address'])" <<< $(hacs validate custom_components/brink_ventilation)`
-        echo $mean
-
+    
     - name: Commit version bump
       run: |
         git config user.name "GitHub Actions"
@@ -51,6 +38,47 @@ jobs:
         git add custom_components/brink_ventilation/manifest.json
         git commit -m "Bump version to ${VERSION}" || echo "No changes to commit"
         git push
+
+  wait-for-validation:
+    name: Await Validation
+    runs-on: ubuntu-latest
+    needs: update-manifest
+
+    steps:
+    - name: Wait for Validate HACS and Hassfest Workflows
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const result = await github.rest.actions.listWorkflowRunsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            per_page: 50,
+          });
+
+          const tag = process.env.GITHUB_REF.split('/').pop();
+          const workflows = ['validate-hacs.yml', 'validate-hassfest.yml'];
+          const runs = result.data.workflow_runs.filter(run =>
+            workflows.includes(run.name) && run.head_branch === tag
+          );
+          
+          if (runs.length < workflows.length) {
+            core.setFailed('One or more validation workflows have not run yet.');
+          } else {
+            for (const run of runs) {
+              if (run.conclusion !== 'success') {
+                core.setFailed(`Validation failed for workflow: ${run.name}`);
+              }
+            }
+          }
+
+  create_release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: wait-for-validation
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
